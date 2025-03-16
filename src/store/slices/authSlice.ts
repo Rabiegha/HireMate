@@ -10,7 +10,7 @@ interface AuthState {
 
 const initialState: AuthState = {
   user: null,
-  loading: false,
+  loading: true,
   error: null,
   timeStamp: null,
 };
@@ -24,7 +24,7 @@ const authSlice = createSlice({
       state.timeStamp = Date.now();
       state.loading = false;
       state.error = null;
-      localStorage.setItem('authTimeStamp', JSON.stringify(state.timeStamp)); // save the timestamp to local storage
+      localStorage.setItem('authTimeStamp', JSON.stringify(state.timeStamp));
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
@@ -37,6 +37,7 @@ const authSlice = createSlice({
       state.user = null;
       state.timeStamp = null;
       localStorage.removeItem('authTimeStamp');
+      state.loading = false;
     }
   },
 });
