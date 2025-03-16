@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabase';
 import { setUser } from '../store/slices/authSlice';
 import type { RootState } from '../store';
 import { toast } from 'sonner';
+import { logoutUser } from '../services/authService';
 
 function Navbar() {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -16,16 +17,12 @@ function Navbar() {
 
   const handleLogout = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      
-      dispatch(setUser(null));
-      toast.success('Logged out successfully');
-      navigate('/');
+        await logoutUser(dispatch);
+        toast.success('Logged out successfully');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to log out');
+        toast.error(error.message);
     }
-  };
+};
 
   const closeMenu = () => setIsMenuOpen(false);
 

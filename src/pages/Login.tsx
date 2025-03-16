@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../store/slices/authSlice';
 import { AlertCircle } from 'lucide-react';
+import { loginUser } from '../services/authService';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -27,44 +28,7 @@ function Login() {
     setLoading(true);
 
     try {
-      const { data: { user }, error: signInError } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      });
-
-      if (signInError) {
-        if (signInError.message.includes('Invalid login credentials')) {
-          setError('Invalid email or password. Please check your credentials and try again.');
-        } else {
-          setError('An error occurred during login. Please try again.');
-        }
-        return;
-      }
-
-      if (!user) {
-        setError('No user returned after successful login');
-        return;
-      }
-
-      // Get user data from the public users table
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', user.id)
-        .maybeSingle();
-
-      if (userError) {
-        console.error('Error fetching user data:', userError);
-        // If we can't get the user data, still allow login but with basic info
-        dispatch(setUser({
-          id: user.id,
-          email: user.email!,
-          subscription_tier: 'free',
-          created_at: user.created_at,
-        }));
-      } else if (userData) {
-        dispatch(setUser(userData));
-      }
+      await loginUser(email, password, dispatch);
 
       toast.success('Successfully logged in!');
 
