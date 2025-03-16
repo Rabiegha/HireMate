@@ -17,10 +17,12 @@ import ProfilePictureGenerator from './pages/ProfilePictureGenerator';
 import Pricing from './pages/Pricing';
 import Contact from './pages/Contact';
 import AuthGuard from './components/AuthGuard';
+import AuthHandler from './components/AuthHandler';
 
 function App() {
   return (
     <Provider store={store}>
+      <AuthHandler />
       <Router>
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
           <Navbar />
